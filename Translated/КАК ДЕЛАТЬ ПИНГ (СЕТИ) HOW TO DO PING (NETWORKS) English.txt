@@ -1,0 +1,20 @@
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ HOW TO PING +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+1. CREATE A TXT FILE ON THE DESKTOP WITH THE NAME DOMAINS.txt
+2. DO YOU HAVE SORTED OR JUST LOCAL NAMES OF COMPUTERS ENTER THEM IN THIS FILE
+3. POUR ON THE MACHINE (C:ProgramData) WITH WHICH THE PING FILE DOMAINS.txt and p WILL GO.bat
+4. RUN p.bat USING THE SHELL COMMAND
+5. AFTER THE PING, DOWNLOAD THE RES FILE.txt
+
+-----------------------------------------------------------------------------------------------------------------------------------
+HOW TO QUICKLY GET AN INDIVIDUAL ENTREPRENEUR IN ITS PURE FORM FROM CRUNCHED MACHINES
+-----------------------------------------------------------------------------------------------------------------------------------
+
+1. YOU HAVE A FI RES.txt, OPEN IT IN NOTEPAD++
+2.PRESS CTRL+F IN THE SEARCH BOX TYPE TTL
+3.CLICK FIND ALL IN CURRENT DOCUMENT YOU WILL HAVE A WINDOW WITH IP FROM THE BOTTOM 
+4. GO TO THE SITE EN.TOOLPAGE.ORG/TOOL/IPV4-EXTRACTOR THERE INSERT EVERYTHING THAT TURNED OUT AND GET CLEAN IPs
+
+BRUTUS SIMPLE HASH WEBSITE
+
+====================================================================================================================================

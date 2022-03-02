@@ -1,0 +1,6 @@
+elevation of rights (default)
+if we see that the bot came with a blue monic, the first thing we check is the rights of our user on the wheelbarrow (shell whoami /groups)
+if we see at the very top that we have admin rights (BULTINAdministrators) then feel free to click pkm on the bot - acess - elewait 
+further:
+svc-exe ( start a new session on the bot not from the process but from the services, the session will come from the system with a red monik )
+uac-token-dubl ( start the session from the current user, but with a red monic )

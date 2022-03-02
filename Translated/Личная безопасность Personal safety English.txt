@@ -1,0 +1,8 @@
+I think everyone here works through a virtual one. Therefore, I advise you to install the virtual on the crypted volume using VeraCrypt.
+1 download Veracrypt
+2 will need to allocate space on your disk for a file / or to crypt the entire disk at once
+An important rule is that you will have to install the virtual window again, because unfortunately, when you encrypt your old working virtual, an insurmountable error in the code will arise and it will no longer start. This is not a big problem, because you will be able to get all your files from the image of your old virtual via 7ZIP.
+
+Don't forget to save your passes to enter this chat room or Tokyo jaber, because if you lose it, no one will help you come back.
+
+(if anyone can find a way without installing a new OS, please write me off)

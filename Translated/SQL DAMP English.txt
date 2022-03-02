@@ -1,0 +1,37 @@
+0. see who works with the database (hosts and users from where they connected to it)
+shell sqlcmd -S localhost -Q "select loginame, hostname from sys.sysprocesses" 
+
+1. Output of all databases on the server in KMD
+shell sqlcmd.exe -S localhost -E -Q "SELECT name FROM master.dbo.sysdatabases;" 
+
+
+in megabytes
+shell sqlcmd -S localhost -E -Q "SELECT d.name, ROUND(SUM(mf.size) * 8 / 1024, 0) FROM sys.master_files mf INNER JOIN sys.databases d ON d.database_id = mf.database_id WHERE d.database_id > 4 GROUP BY d.name ORDER BY d.name;"
+
+2. Unload the 100 most saturated in terms of the number of rows of tables in the database, the number of rows and the size of the tables on the wine
+sqlcmd -S localhost -E -Q "USE %databasename% SELECT TOP 100 s.Name AS SchemaName, t.Name AS TableName, p.rows AS RowCounts, CAST(ROUND((SUM(a.total_pages) / 128.00), 2) AS NUMERIC(36, 2)) AS Total_MB FROM sys.tables t INNER JOIN sys.indexes i ON t.OBJECT_ID = i.object_id INNER JOIN sys.partitions p ON i.object_id = p.OBJECT_ID AND i.index_id = p.index_id INNER JOIN sys.allocation_units a ON p.partition_id = a.container_id INNER JOIN sys.schemas s ON t.schema_id = s.schema_id GRчфOUP BY t.Name, s.Name, p.Rows ORDER BY RowCounts desc, Total_MB  desc;"
+
+2.1. 
+sqlcmd -S localhost -E -Q "USE %databasename% SELECT TOP 100 s.Name AS SchemaName, t.Name AS TableName, p.rows AS RowCounts, CAST(ROUND((SUM(a.total_pages) / 128.00), 2) AS NUMERIC(36, 2)) AS Total_MB FROM sys.tables t INNER JOIN sys.indexes i ON t.OBJECT_ID = i.object_id INNER JOIN sys.partitions p ON i.object_id = p.OBJECT_ID AND i.index_id = p.index_id INNER JOIN sys.allocation_units a ON p.partition_id = a.container_id INNER JOIN sys.schemas s ON t.schema_id = s.schema_id GROUP BY t.Name, s.Name, p.Rows ORDER BY RowCounts desc, Total_MB  desc;"
+
+3. Count rows in a specific table in a specific database
+sqlcmd -S localhost -E -Q "select count(*) from %databasename%.dbo.%tablename%;"
+
+4. Upload the first 10 records in a specific table in a specific database
+sqlcmd -S localhost -E -Q "select top 10 * from %databasename%.dbo.%tablename%;"
+sqlcmd -S localhost -E -Q "use %databasename%; select top 10 * from %tablename%" -W
+
+5. Search by column names in a specific database using the example %pass%
+sqlcmd -S localhost -E -Q "select COLUMN_NAME as 'ColumnName', TABLE_NAME as  'TableName' from %databasename%.INFORMATION_SCHEMA.COLUMNS where COLUMN_NAME like '%pass%';"
+
+6. Uploading the data of the contents of specific columns from a certain table to a txt file on the winch to the folder (in this example, the numeric value of the table > date
+sqlcmd.exe -S localhost -E -Q "select UserKey, EmailAddress, RealName, Phone, FirstName, LastName, CountryName, CreatedDate from %databasename%.dbo.%tablename% where CreatedDate > '2017-11-30';" -W -s"|" -o "C:\temp\123.txt"
+FULL >
+sqlcmd.exe -S localhost -E -Q "select * from %databasename%.dbo.%tablename%" -W -s"|" -o "C:\Windows\Temp\1.txt"
+
+
+7. Output of all tables of a particular database
+shell sqlcmd -S localhost -E -Q "use %databasename%; exec sp_tables" -W
+
+for remote/other local server change localhost to ip,port
+as an option - localhost,%port% (see netstat)
